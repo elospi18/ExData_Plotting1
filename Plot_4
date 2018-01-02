@@ -1,0 +1,20 @@
+#plot4
+household<-read.table("household_power_consumption.txt",sep = ";",header = TRUE,na.strings = "?") #read the data
+
+household$Date <- as.Date(household$Date, format = "%d/%m/%Y")
+household1 <- subset(household, subset = (Date >= "2007-02-01" & Date <= "2007-02-02"))
+
+household1$completedate <- paste(as.Date(household1$Date), household1$Time)
+household1$completedate<-as.POSIXct(household1$completedate)
+
+
+png("plot4.png", width=480, height=480)
+par(mfrow=c(2,2))
+with(household1,plot(completedate,Global_active_power,type = "l",xlab = "",ylab = "Global Active Power"))
+with(household1,plot(completedate,Voltage,type = "l",xlab = "datetime",ylab = "Voltage"))
+with(household1,plot(completedate,Sub_metering_1,type = "l",ylab = "Energy sub metering",xlab = ""))
+lines(household1$completedate,household1$Sub_metering_2,col="red")
+lines(household1$completedate,household1$Sub_metering_3,col="blue")
+legend("topright",col = c("black","red","blue"),legend = c("Sub_metering_1","Sub_metering_2","Sub_metering_3"),lty = c(1,1,1))
+with(household1,plot(completedate,Global_reactive_power,xlab = "datetime",ylab = "Global_reactive_power",type = "l"))
+dev.off()
